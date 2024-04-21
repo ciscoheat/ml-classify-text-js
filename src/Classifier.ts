@@ -43,6 +43,43 @@ export class Classifier {
 	 * @return {this}
 	 */
 	train(input: string | string[], label: string): this {
+		return this._update(input, label, 'increase');
+	}
+
+	/**
+	 * Make the current model put less weight to an input string (or array of strings) and a corresponding label
+	 *
+	 * @param {(string|string[])} input - String, or an array of strings
+	 * @param {string} label - Corresponding label
+	 * @return {this}
+	 */
+	demote(input: string | string[], label: string): this {
+		return this._update(input, label, 'decrease');
+	}
+
+	/**
+	 * Make the current model forget an input string (or array of strings) and its corresponding label
+	 *
+	 * @param {(string|string[])} input - String, or an array of strings
+	 * @param {string} label - Corresponding label
+	 * @return {this}
+	 */
+	forget(input: string | string[], label: string): this {
+		return this._update(input, label, 'remove');
+	}
+
+	/**
+	 * Train the current model using an input string (or array of strings) and a corresponding label
+	 *
+	 * @param {(string|string[])} input - String, or an array of strings
+	 * @param {string} label - Corresponding label
+	 * @return {this}
+	 */
+	private _update(
+		input: string | string[],
+		label: string,
+		type: 'increase' | 'decrease' | 'remove',
+	): this {
 		if (typeof input !== 'string' && !Array.isArray(input)) {
 			throw new Error('input must be either a string or Array');
 		}
@@ -82,12 +119,19 @@ export class Classifier {
 				const occurrences = tokens[index];
 
 				if (
+					type === 'remove' ||
 					!Object.prototype.hasOwnProperty.call(this._model.data[label], index)
 				) {
 					this._model.data[label][index] = 0;
 				}
 
-				this._model.data[label][index] += occurrences;
+				if (type !== 'remove') {
+					this._model.data[label][index] = Math.max(
+						this._model.data[label][index] +
+							(type === 'increase' ? occurrences : -occurrences),
+						0,
+					);
+				}
 			}
 		}
 
