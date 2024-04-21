@@ -56,8 +56,8 @@
 	"homepage": "https://github.com/andreekeberg/ml-classify-text-js",
 	"devDependencies": {
 		"@biomejs/biome": "1.6.3",
-		"jsdoc": "^4.0.0",
-		"jsdoc-to-markdown": "^8.0.0",
+		"jsdoc": "^4.0.2",
+		"jsdoc-to-markdown": "^8.0.1",
 		"tsup": "^8.0.2",
 		"typescript": "^5.4.3",
 		"vitest": "^1.4.0"
